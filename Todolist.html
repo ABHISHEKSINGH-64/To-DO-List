@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO-LIST</title>
+    <style>
+        <style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* main card */
+div:first-child {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 320px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 15px;
+}
+
+/* input */
+input {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* add button */
+button {
+    padding: 8px 12px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #43a047;
+}
+
+/* list */
+#List {
+    margin-top: 15px;
+    font-size: 16px;
+    line-height: 1.8;
+}
+</style>
+
+    </style>
+</head>
+<body>
+    <div>
+         <h1>TODO LIST</h1>
+         <input type="text", id="input", placeholder="Enter" >
+         <button id="addbtn" onclick="addtodo()">+</button>
+    </div>
+      <div id="List"></div>
+        <script>
+            let button = document.getElementById("addbtn")
+            let input = document.getElementById("input")
+            let List = document.getElementById("List")
+
+            let todos = [
+                {
+                    id : 1,
+                    todo:'Jvascript'
+                },
+                {
+                    id:2,
+                    todo:'python'
+                },
+            ]
+            
+
+            function showTodos(){
+                let list = "";
+                for (i=0; i<todos.length; i++){
+                    list += todos[i].id + '.' + todos[i].todo + '<br>';
+                }
+                List.innerHTML= list;
+                input.value= "";                    
+            }
+            
+            function addtodo() {
+                task = input.value;
+                if (input.value == "") {
+                    return;
+                }
+                           
+                todos.push({
+                      id : todos.length + 1,
+                     todo: task
+                } );
+            
+                showTodos();
+            };
+            
+            showTodos();
+               
+        </script>
+</body>
+</html>
