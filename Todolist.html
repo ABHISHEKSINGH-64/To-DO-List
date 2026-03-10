@@ -1,79 +1,129 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>todo list</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 250px 29px;
-      }
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Todo List CRUD</title>
 
-      h1 {
-        color: #333;
-      }
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+    background:#f4f4f4;
+}
 
-      input[type="text"] {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 300px;
-      }
+.container{
+    width:400px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
 
-      button {
-        padding: 10px 15px;
-        background-color: #5cb85c;
-        border: none;
-        border-radius: 4px;
-        color: white;
-        cursor: pointer;
-      }
+input{
+    padding:10px;
+    width:70%;
+}
 
-      button:hover {
-        background-color: #4cae4c;
-      }
+button{
+    padding:10px;
+    margin:5px;
+    cursor:pointer;
+}
 
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
+ul{
+    list-style:none;
+    padding:0;
+}
 
-      li {
-        background: white;
-        margin: 5px 0;
-        padding: 10px;
-        border: 1px solid #eee;
-        border-radius: 4px;
-      }
-      .container {
-        margin-top: 600px;
-        max-width: 600px;
-        margin: auto;
-        background: white;
-        padding: 20px; 
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      .body {
-        background-color: #2a1313;
-      }
-    </style>
-  </head>
-  <body class="body">
-    <div class="container">
-      <h1>TODO APPLICATION</h1>
+li{
+    background:#eee;
+    margin:8px 0;
+    padding:10px;
+    border-radius:5px;
+}
+</style>
 
-      <div>
-        <input id="newTask" type="text" placeholder="Add new task..." />
-        <button type="submit" id="addButton">Add Task</button>
-        <button type="reset" id="clearButton">Clear Tasks</button>
-        <ul id="taskList"></ul>
+</head>
 
-        <script src="script.js"></script>
-      </div>
-    </div>
-  </body>
+<body>
+
+<div class="container">
+
+<h2>Todo List</h2>
+
+<input type="text" id="taskInput" placeholder="Enter task">
+<button onclick="addTask()">Add</button>
+
+<ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+let tasks = [];
+
+// CREATE
+function addTask(){
+
+    let input = document.getElementById("taskInput");
+    let task = input.value;
+
+    if(task === ""){
+        alert("Enter a task");
+        return;
+    }
+
+    tasks.push(task);
+    input.value="";
+
+    displayTasks();
+}
+
+
+// READ
+function displayTasks(){
+
+    let list = document.getElementById("taskList");
+    list.innerHTML="";
+
+    tasks.forEach((task,index)=>{
+
+        list.innerHTML += `
+        <li>
+        ${task}
+        <button onclick="editTask(${index})">Edit</button>
+        <button onclick="deleteTask(${index})">Delete</button>
+        </li>
+        `;
+
+    });
+}
+
+
+// UPDATE
+function editTask(index){
+
+    let newTask = prompt("Edit task:",tasks[index]);
+
+    if(newTask !== null){
+        tasks[index] = newTask;
+        displayTasks();
+    }
+
+}
+
+
+// DELETE
+function deleteTask(index){
+
+    tasks.splice(index,1);
+    displayTasks();
+
+}
+
+</script>
+
+</body>
 </html>
+```
