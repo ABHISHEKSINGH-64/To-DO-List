@@ -1,129 +1,174 @@
-```html
-<!DOCTYPE html>
-<html>
-<head>
-<title>Todo List CRUD</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
 
-<style>
-body{
-    font-family: Arial;
-    text-align:center;
-    background:#f4f4f4;
-}
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
 
-.container{
-    width:400px;
-    margin:auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
-}
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f4f6f8;
+      }
 
-input{
-    padding:10px;
-    width:70%;
-}
+      .todo-container {
+        width: 100%;
+        max-width: 400px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
 
-button{
-    padding:10px;
-    margin:5px;
-    cursor:pointer;
-}
+      .todo-container h2 {
+        margin-bottom: 16px;
+        text-align: center;
+        color: #333;
+      }
 
-ul{
-    list-style:none;
-    padding:0;
-}
+      .todo-input {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
 
-li{
-    background:#eee;
-    margin:8px 0;
-    padding:10px;
-    border-radius:5px;
-}
-</style>
+      .todo-input input {
+        flex: 1;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        outline: none;
+      }
 
-</head>
+      .todo-input input:focus {
+        border-color: #000dff;
+      }
 
-<body>
+      .todo-input button {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        background: #003062;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+      }
 
-<div class="container">
+      .todo-input button:hover {
+        background: #007bff;
+      }
 
-<h2>Todo List</h2>
+      .todo-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
 
-<input type="text" id="taskInput" placeholder="Enter task">
-<button onclick="addTask()">Add</button>
+      .todo-list li {
+        padding: 10px 12px;
+        border-radius: 6px;
+        background: #f1f3f5;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #333;
+      }
 
-<ul id="taskList"></ul>
+      button {
+        background-color: red;
+        cursor: pointer;
+        color: white;
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
 
-</div>
+  <body>
+    <div class="todo-container">
+      <h2>Todo App</h2>
 
-<script>
+      <form class="todo-input" onsubmit="addTodo(event)">
+        <input id="userTodoInput" type="text" placeholder="Enter a task..." />
+        <button type="submit" id="add-button">Add</button>
+      </form>
 
-let tasks = [];
+      <ul id="todo-list"></ul>
+    </div>
 
-// CREATE
-function addTask(){
+    <script>
+  let todos = [
+    { id: 1, title: "first todo" },
+    { id: 2, title: "second todo" },
+    { id: 3, title: "third one" },
+  ];
 
-    let input = document.getElementById("taskInput");
-    let task = input.value;
+  let isEditModeOn = false;
+  let editTodoId = null;
 
-    if(task === ""){
-        alert("Enter a task");
-        return;
+  function addTodo(event) {
+    event.preventDefault();
+
+    let input = document.getElementById("userTodoInput");
+    let inputValue = input.value.trim();
+
+    if (inputValue === "") return;
+
+    if (isEditModeOn) {
+      // UPDATE MODE
+      let todoToUpdate = todos.find(todo => todo.id === editTodoId);
+      todoToUpdate.title = inputValue;
+
+      isEditModeOn = false;
+      editTodoId = null;
+      document.getElementById("add-button").innerText = "Add";
+    } else {
+      // ADD MODE
+      todos.push({ id: Date.now(), title: inputValue });
     }
 
-    tasks.push(task);
-    input.value="";
+    input.value = "";
+    showTodos();
+  }
 
-    displayTasks();
-}
+  function showTodos() {
+    let todosList = document.getElementById("todo-list");
+    todosList.innerHTML = "";
 
-
-// READ
-function displayTasks(){
-
-    let list = document.getElementById("taskList");
-    list.innerHTML="";
-
-    tasks.forEach((task,index)=>{
-
-        list.innerHTML += `
+    for (let i = 0; i < todos.length; i++) {
+      todosList.innerHTML += `
         <li>
-        ${task}
-        <button onclick="editTask(${index})">Edit</button>
-        <button onclick="deleteTask(${index})">Delete</button>
-        </li>
-        `;
-
-    });
-}
-
-
-// UPDATE
-function editTask(index){
-
-    let newTask = prompt("Edit task:",tasks[index]);
-
-    if(newTask !== null){
-        tasks[index] = newTask;
-        displayTasks();
+          ${todos[i].title}
+          <button onclick="deleteTodo(${todos[i].id})" style="margin-left: 15px;">Delete</button>
+          <button onclick="updateTodo(${todos[i].id})" style="margin-left: 10px;">Update</button>
+        </li>`;
     }
+  }
 
-}
+  function deleteTodo(id) {
+    todos = todos.filter(todo => todo.id !== id);
+    showTodos();
+  }
 
+  function updateTodo(id) {
+    let clickedTodo = todos.find(todo => todo.id === id);
 
-// DELETE
-function deleteTask(index){
+    document.getElementById("userTodoInput").value = clickedTodo.title;
+    document.getElementById("add-button").innerText = "Update";
 
-    tasks.splice(index,1);
-    displayTasks();
+    isEditModeOn = true;
+    editTodoId = id;
+  }
 
-}
-
+  showTodos();
 </script>
-
-</body>
+  </body>
 </html>
-```
